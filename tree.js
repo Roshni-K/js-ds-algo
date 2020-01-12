@@ -59,6 +59,9 @@ t.root.add('b');
 t.root.children[0].add('d');
 t.root.add('c');
 // let treeData = new Tree(myTree);
+t.traverseDFT(function(data){
+    console.log(data)
+})
 t.traversBFT(function(data){
     console.log(data)
 })
