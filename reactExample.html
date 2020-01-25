@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script defer crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script defer crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id='root'></div>
+</body>
+<script type='text/babel'>
+    function CountDown({ hours = 0, minutes = 0, seconds = 0 }) {
+  const [paused, setPaused] = React.useState(false);
+  const [over, setOver] = React.useState(false);
+  const [time, setTime] = React.useState({
+    hours: parseInt(hours),
+    minutes: parseInt(minutes),
+    seconds: parseInt(seconds)
+  });
+
+  const tick = () => {
+    if (paused || over) return;
+    if (time.hours == 0 && time.minutes == 0 && time.seconds == 0) setOver(true);
+    else if (time.minutes == 0 && time.seconds == 0)
+      setTime({
+        hours: time.hours - 1,
+        minutes: 59,
+        seconds: 59
+      });
+    else if (time.seconds == 0)
+      setTime({
+        hours: time.hours,
+        minutes: time.minutes - 1,
+        seconds: 59
+      });
+    else
+      setTime({
+        hours: time.hours,
+        minutes: time.minutes,
+        seconds: time.seconds - 1
+      });
+  };
+
+  const reset = () => {
+    setTime({
+      hours: parseInt(hours),
+      minutes: parseInt(minutes),
+      seconds: parseInt(seconds)
+    });
+    setPaused(false);
+    setOver(false);
+  };
+
+  React.useEffect(() => {
+    let timerID = setInterval(() => tick(), 1000);
+    return () => clearInterval(timerID);
+  });
+
+  return (
+    <div>
+      <p>{`${time.hours.toString().padStart(2, '0')}:${time.minutes
+        .toString()
+        .padStart(2, '0')}:${time.seconds.toString().padStart(2, '0')}`}</p>
+      <div>{over ? "Time's up!" : ''}</div>
+      <button onClick={() => setPaused(!paused)}>{paused ? 'Resume' : 'Pause'}</button>
+      <button onClick={() => reset()}>Restart</button>
+    </div>
+  );
+}
+ReactDOM.render(<CountDown hours="1" minutes="45" />, document.getElementById('root'));
+</script>
+</html>
